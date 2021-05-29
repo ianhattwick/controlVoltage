@@ -8,7 +8,7 @@
 #define modularCV_h
 
 #include "Arduino.h"
-
+#include "Sequencer.h"
 
 class modularCV
 {

@@ -46,15 +46,17 @@ void modularCV::loop() {
 
     case 3: //smooth CV
       _progress = millis() - _lineBegin;
+     //Serial.println(" progress: " + String(_progress) + " " + String(_progress/_lineLength));
       if(_progress > _lineLength){
         _outVal = _goal;
         _state = 0;
         break;
       } else{
-        _outVal = (_goal - _prev) * (_progress/_lineLength) + _prev;
+        _outVal = (float)(_goal - _prev) * ((float)_progress/_lineLength) + _prev;
       }
       break;
     }//switch
+    //Serial.println("state" + String(_state));
   }//timer
 }
 
@@ -88,6 +90,7 @@ void modularCV::cv(int val, int lineTime){
   _goal = val;
   _state = 3;
   _lineLength = lineTime;
+  _lineBegin = millis();
 }
 
 void modularCV::midi(byte _val){
