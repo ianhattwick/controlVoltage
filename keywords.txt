@@ -1,0 +1,14 @@
+# Syntax Coloring Map For modularCV library
+
+# Datatypes (KEYWORD1)
+modularCV    KEYWORD1
+
+# Methods and Functions (KEYWORD2)
+trigger KEYWORD2
+gate KEYWORD2
+cv KEYWORD2
+midi KEYWORD2
+
+# Instances (KEYWORD2)
+
+# Constants (LITERAL1)

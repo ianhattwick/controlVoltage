@@ -1,3 +1,9 @@
+/*
+  modularCV.h - library for generating modular CV signals
+  Copyright (c) 2021 Ian Hattwick.  All right reserved.
+
+  This library will be distributed under the MIT License. . . .
+*/
 #ifndef modularCV_h
 #define modularCV_h
 
