@@ -29,7 +29,7 @@ int16_t Sequencer::get(){
   return _values[_cur_step];
 }
 //return the value at a specific step
-uint8_t Sequencer::get(){ return _cur_step;}
+int16_t Sequencer::get(uint8_t step){ return _values[constrain(step,0,_num_steps-1)];}
 
 //returns the value then updates _cur_step
 int16_t Sequencer::trigger(){
@@ -38,7 +38,7 @@ int16_t Sequencer::trigger(){
   return _values[_cur_step];
 }
 
-int16_t Sequencer::getCurStep(){ return _cur_step;}
+uint8_t Sequencer::getCurStep(){ return _cur_step;}
 
 
 //resets the sequence to a position

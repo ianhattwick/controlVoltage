@@ -33,6 +33,9 @@ class modularCV
     uint32_t _timer = 0;
     byte _loopInterval = 0;
     byte _available = 0;
+
+    int16_t riseTime = 0;
+    int16_t fallTime = 0;
     
     uint32_t _triggerTimer = 0;
     byte _trigLen = 3;
