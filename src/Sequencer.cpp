@@ -30,6 +30,8 @@ int16_t Sequencer::get(){
 }
 //return the value at a specific step
 int16_t Sequencer::get(uint8_t step){ return _values[constrain(step,0,_num_steps-1)];}
+// int16_t Sequencer::get(uint16_t step){ return _values[constrain(step,0,_num_steps-1)];}
+// int16_t Sequencer::get(int16_t step){ return _values[constrain(step,0,_num_steps-1)];}
 
 //returns the value then updates _cur_step
 int16_t Sequencer::trigger(){
@@ -67,7 +69,7 @@ void Sequencer::forward(){ _inc = 1;}
 void Sequencer::stepSize(uint8_t step){ _inc = step;}
 
 //copy the whole sequence to an array
-uint8_t Sequencer::getArray(int *arr, uint8_t size){
+uint8_t Sequencer::getArray(int16_t *arr, uint8_t size){
   int i=0;
   for(i=0;i<size;i++) {
     if(i<_num_steps-1) arr[i] = _values[i];
@@ -116,6 +118,9 @@ void Sequencer::setArray(int16_t *arr, uint8_t size, uint8_t offset){
     _values[curStep]=arr[i];
   }
 }
+void Sequencer::setArray(int16_t *arr, int16_t size){ setArray(arr, (uint8_t) size); }
+void Sequencer::setArray(int16_t *arr, int16_t size, uint8_t offset) {setArray(arr, (uint8_t) size, offset); }
+
 
 uint8_t Sequencer::endOfCycle(){ return _cur_step == _end; }  //end of cycle
 uint8_t Sequencer::startOfCycle(){ return _cur_step == _begin; } //start of cycle

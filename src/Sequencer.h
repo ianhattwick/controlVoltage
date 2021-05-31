@@ -20,6 +20,8 @@ class Sequencer
     int16_t get();
     //return value at a specific step
     int16_t get(uint8_t step);
+    // int16_t get(int16_t step);
+    // int16_t get(uint16_t step);
     //returns the value then updates _cur_step
     int16_t trigger();
     //return current step
@@ -36,7 +38,7 @@ class Sequencer
     void stepSize(uint8_t step);
 
     //copy the whole sequence to an array
-    uint8_t getArray(int *arr, uint8_t size);
+    uint8_t getArray(int16_t *arr, uint8_t size);
 
     //set the value of a single step
     void set(uint8_t step, int16_t val);
@@ -53,6 +55,8 @@ class Sequencer
     //with optional offset
     void setArray(int16_t *arr, uint8_t size);
     void setArray(int16_t *arr, uint8_t size, uint8_t offset);
+    void setArray(int16_t *arr, int16_t size);
+    void setArray(int16_t *arr, int16_t size, uint8_t offset);
 
     uint8_t endOfCycle();  //end of cycle
     uint8_t startOfCycle(); //start of cycle
