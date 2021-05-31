@@ -17,10 +17,11 @@ class modularCV
     modularCV(uint8_t bitDepth);
 
     void setup();
-    int loop();
+    void loop();
     void trigger();
     void gate(int val);
-    void gate(int val, int gateLen);
+    void timedGate(int gateLen);
+    //void gate(int val, int gateLen);
     void cv(int val);
     void cv(int val, int lineTime);
     void cv(int val, int attack, int decay);
@@ -28,31 +29,32 @@ class modularCV
     void midi( byte _val );
     
     int get();
-    byte available();
     int peakVolt = 4095;
+
+    void curve(float val);
+    float _curve = 1.;
     
 
   private:
     uint8_t _bitDepth = 12;
-    uint32_t _timer = 0;
-    byte _loopInterval = 0;
-    byte _available = 0;
+    uint8_t _state = 0;
+    int _outVal = 0;
+    uint8_t _updateFlag = 1;
 
-    int16_t _riseTime = 0;
-    int16_t _fallTime = 0;
     
+    //trigger/gate variables
     uint32_t _triggerTimer = 0;
-    byte _trigLen = 3;
+    uint8_t _trigLen = 3;
     int _gateLen = 100;
-    byte _state = 0;
     
+    //cv variables
     int _prev = 0;
     int _goal = 0;
     uint32_t _lineBegin = 0;
     uint32_t _progress = 0;
+    int16_t _riseTime = 0;
+    int16_t _fallTime = 0;
     int _lineLength = 100;
-    int _outVal = 0;
-  
     
 };
 #endif

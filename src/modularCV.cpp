@@ -28,12 +28,13 @@ void modularCV::setup() {
 }
 
 
-int modularCV::loop() {
-  if(millis()-_timer > _loopInterval){
+void modularCV::loop() {
+  if( _updateFlag ){ //only calc new sample after previous is read
     byte direction;
 
     switch(_state){
       case 0: //no activity
+      //Serial.println("0" + String(_outVal));
       break;
 
       case 1: //in trigger delay
@@ -79,6 +80,7 @@ int modularCV::loop() {
           _outVal = (float)(_goal - _prev) * ((float)_progress/_lineLength) + _prev;
         }
         //Serial.println("attack " + String(_progress));
+        //Serial.println("att" + String(_outVal));
         break;
 
       case 5: //AR decay
@@ -90,16 +92,28 @@ int modularCV::loop() {
           break;
         } else{
           _outVal = (float)(_goal - _prev) * ((float)_progress/_lineLength) + _prev;
+          if( _outVal<0 ) _outVal = 0;
         }
-        //Serial.println("decay " + String(_progress));
+        //Serial.println("rel" + String(_outVal));
         break;
-
 
     }//switch
     //Serial.println("state" + String(_state));
-  }//timer
 
-  return _outVal;
+    if(_curve != 1.){
+        float val = (float)_outVal / ((1<<_bitDepth)-1);
+        // Serial.print(_outVal);
+        // Serial.print(" ");
+        // Serial.print(val);
+        // Serial.print(" ");
+        val = pow(val, _curve);
+        //Serial.println(val);
+        _outVal = val * (1<<_bitDepth)-1;
+        if( _outVal<0 ) _outVal = 0;
+    }
+    _updateFlag = 0;
+  }
+
 }
 
 void modularCV::trigger() {
@@ -114,12 +128,18 @@ void modularCV::gate(int val) {
   _state = 0;
 }
 
-void modularCV::gate(int val, int gateLen) {
-  if( val > 0 ) _outVal = (1<<_bitDepth) - 1;
-  else _outVal = 0;
+void modularCV::timedGate(int gateLen) {
+  _outVal = (1<<_bitDepth) - 1;
   _gateLen = gateLen;
   _state = 2;
 }
+
+// void modularCV::gate(int val, int gateLen) {
+//   if( val > 0 ) _outVal = (1<<_bitDepth) - 1;
+//   else _outVal = 0;
+//   _gateLen = gateLen;
+//   _state = 2;
+// }
 
 void modularCV::cv(int val){
   if( val > (1<<_bitDepth) - 1) val = (1<<_bitDepth) - 1;
@@ -172,12 +192,14 @@ void modularCV::AR(int attack, int decay){
 }
 
 int modularCV::get(){
+  _updateFlag = 1;
   return _outVal;
 }
 
-byte modularCV::available(){
-  return _available;
+void modularCV::curve(float val){
+  _curve = constrain( val, 0.01, 10.);
 }
+
 
 
 /* _____PRIVATE FUNCTIONS_____________________________________________________ */
