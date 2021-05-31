@@ -14,14 +14,17 @@ class modularCV
 {
   public:
     modularCV();
+    modularCV(uint8_t bitDepth);
 
     void setup();
-    void loop();
+    int loop();
     void trigger();
     void gate(int val);
     void gate(int val, int gateLen);
     void cv(int val);
     void cv(int val, int lineTime);
+    void cv(int val, int attack, int decay);
+    void AR(int attack, int decay);
     void midi( byte _val );
     
     int get();
@@ -30,12 +33,13 @@ class modularCV
     
 
   private:
+    uint8_t _bitDepth = 12;
     uint32_t _timer = 0;
     byte _loopInterval = 0;
     byte _available = 0;
 
-    int16_t riseTime = 0;
-    int16_t fallTime = 0;
+    int16_t _riseTime = 0;
+    int16_t _fallTime = 0;
     
     uint32_t _triggerTimer = 0;
     byte _trigLen = 3;
