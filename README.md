@@ -4,7 +4,7 @@ A simple library for generating CV to control modular synthesizers. This library
 
 Currently I am using the MCP4728 4-channel DAC, using the library https://github.com/BenoitSchillings/mcp4728. But you should be able to use the onboard DAC of an ESP32 etc. 
 
-###Basic functionality
+### Basic functionality
 
 The core library gives you the ability to do generate trigger, gate, quantized CV, slew limiting, AR envelopes, etc.
 
