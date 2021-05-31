@@ -30,36 +30,20 @@ void setup() {
 
 void loop() {
 
-  chan1.loop(); //loop has an internal 1kHz timer
+  chan1.loop(); 
   chan2.loop();
   
-  writeTrigger();
+ //generate a trigger signal
+ //trigger sequencer
+ //and update CV with current seq value
+  static uint32_t controlTimer = 0;
+  int interval = 150;
+  if(millis()-controlTimer>interval){
+    controlTimer=millis();
 
-  //monitor output
-  static uint32_t timer = 0;
-  int interval = 1;
-  if(millis()-timer>interval){
-    timer=millis();
-    Serial.print("trig ");
-    Serial.print( chan1.get());
-    Serial.print(" seq ");
-    Serial.println( chan2.get());
-
-  }
-}
-
-//generate a trigger signal
-//trigger sequencer
-//and update CV with current seq value
-void writeTrigger(){
-  static uint32_t timer = 0;
-  int interval = 100;
-  static int val = 0;
-
-  if(millis()-timer>interval){
-    timer=millis();
+    static int val = 0;
     chan1.trigger();
-    chan2.cv( seq.trigger() ); //trigger() returns the current seq value
+    chan2.cv( seq.trigger() ); //trigger() returns the current seq value and updates seq step
 
     //every time we reach the end of the cycle we will change the range 
     //of the sequencer
@@ -67,11 +51,25 @@ void writeTrigger(){
       static byte start = 0;
       static byte finish = 15;
       if (start>15) start = 0;
-      if( finish == 255) finish = 15;
+      if( finish > 15) finish = 15;
       seq.range( start++, finish--);
     }
+  }//control loop
+
+
+  //monitor output at signal rate
+  static uint32_t signalTimer = 0;
+  int signalInterval = 1;
+  if( millis()-signalTimer >= signalInterval){
+    signalTimer=millis();
+    Serial.print("trigger:"),
+    Serial.print(chan1.get());
+    Serial.print(",");
+    Serial.print("sequence:"),
+    Serial.println(chan2.get());
   }
 }
+
 
 //use to print the contents of an array to serial monitor
 void printArray(int *array, byte size){

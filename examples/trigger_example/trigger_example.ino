@@ -4,56 +4,64 @@ Basic use of modularCV library to implement a trigger and ramp CV
 - the ramp CV is updated at the same time as the trigger (100ms interval)
 - uses cv(val, rampTime) to smooth the transition between CV values
 - basically, a slew limiter
+
+Every modularCV object has three functions:
+- get() returns the current sample
+- loop() generates a new sample once the previous sample is read
+- some other function to create a CV event. possibilities include:
+  - trigger()
+  - gate(int val ) - static gate signal, outputs HIGH if val>0 else LOW
+  - timedGate( int length ) - HIGH for length ms, then LOW
+  - cv(int val) - static cd
+  - cv(int val, int rampTime) slew limited CV
+  - AR(int attack, int release) - attack release envelope
+  - midi( byte val ) - quantized CV output (1000/octave), with val defined as a midi note
    
 Monitor in Arduino's serial plotter
 */
 
 #include <modularCV.h>
 
+//define cv objects
 modularCV chan1 = modularCV(); //CV
 modularCV chan2 = modularCV(); //trigger
 
-void setup()
-{
+void setup(){
   Serial.begin(115200);  // initialize serial interface for print()
-  }
+
+  Serial.println("modularCV trigger example");
+}
 
 
 
 void loop(){
- 
-  chan1.loop(); //loop has an internal 1kHz timer
+  //call the modularCV objects loop
+  chan1.loop();
   chan2.loop();
-  
-  writeTrigger();
+ 
+  //generate cv signals at control rate
+  static uint32_t controlTimer = 0;
+  int controlInterval = 100;
+  if(millis()-controlTimer>controlInterval){
+    controlTimer = millis();
 
-  //monitor output
-  static uint32_t timer = 0;
-  int interval = 1;
-  if(millis()-timer>interval){
-    timer=millis();
-    Serial.print("cv ");
-    Serial.print( chan1.get());
-    Serial.print("\ttrig ");
-    Serial.println( chan2.get());
-
-  }
-
-}
-
-//generate a trigger signal
-//and update CV ramp
-void writeTrigger(){
-  static uint32_t timer = 0;
-  int interval = 100;
-  static int val = 0;
-
-  if(millis()-timer>interval){
-    timer=millis();
     chan2.trigger();
 
-    chan1.cv(val,interval);
+    static int val = 0;
+    chan1.cv(val,controlInterval); //ramp to val over controlInterval ms
     val+=100;
     if(val > 4000) val = 0;
+  }
+
+  //monitor output at signal rate
+  static uint32_t signalTimer = 0;
+  int signalInterval = 1;
+  if(millis()-signalTimer>signalInterval){
+    signalTimer = millis();
+    Serial.print("cv:");
+    Serial.print( chan1.get());
+    Serial.print(",");
+    Serial.print("trig:");
+    Serial.println( chan2.get());
   }
 }
