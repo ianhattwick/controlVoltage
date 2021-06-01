@@ -9,6 +9,7 @@
 
 #include "Arduino.h"
 #include "Sequencer.h"
+#include "LFO.h"
 
 class modularCV
 {
