@@ -23,48 +23,33 @@ For each CV signal, you must:
 4. get the CV output inside your signal loop by calling chan1.get(). This also frees up chan1 to generate a new sample.
 
 ### Sequencer
-* retrieves the value at the current step
-    seq.get();
-    * return value at a specific step
-    seq.get(uint8_t step);
-    * returns the value then updates _cur_step
-    seq.trigger();
-    * return current step
-    seq.getCurStep();
+* seq.get() - retrieves the value at the current step  
+* seq.get(uint8_t step) - return value at a specific step  
+* seq.trigger() - returns the value then updates _cur_step 
+* seq.getCurStep() - return current step
+    
+* seq.reset(); //default step 0
+* seq.reset(uint8_t step); //resets the sequence to a position
 
-    //resets the sequence to a position
-    void reset(); //default step 0
-    void reset(uint8_t step);
+* seq.range(uint8_t begin, uint8_t end) - specifies the beginning and ending of the sequence
+* seq.reverse()
+* seq.forward()
+* seq.stepSize(uint8_t step)
+* seq.getArray(int16_t *arr, uint8_t size) - opy the whole sequence to an array
 
-    //specifies the beginning and ending of the sequence
-    uint8_t range(uint8_t begin, uint8_t end);
-    void reverse();
-    void forward();
-    void stepSize(uint8_t step);
+* seq.set(uint8_t step, int16_t val) - set the value of a single step
+    
+* fill the array with a sequence  
+    * seq.fill(int16_t val)- //can be a single value
+    * seq.fill(int16_t *arr, uint8_t size) - //or an array
+    * seq.fill(int16_t *arr, uint8_t size, uint8_t offset) - //or an array starting at an aribtrary index
 
-    //copy the whole sequence to an array
-    uint8_t getArray(int16_t *arr, uint8_t size);
+* seq.setArray(int16_t *arr, uint8_t size);
+* seq.setArray(int16_t *arr, uint8_t size, uint8_t offset);
 
-    //set the value of a single step
-    void set(uint8_t step, int16_t val);
+* seq.endOfCycle();  //end of cycle
+* seq.startOfCycle(); //start of cycle
 
-    //fill the array with a sequence
-    //can be a single value
-    void fill(int16_t val);
-    //an array
-    void fill(int16_t *arr, uint8_t size);
-    //or an array starting at an aribtrary index
-    void fill(int16_t *arr, uint8_t size, uint8_t offset);
-
-    //writes an array into the sequence
-    //with optional offset
-    void setArray(int16_t *arr, uint8_t size);
-    void setArray(int16_t *arr, uint8_t size, uint8_t offset);
-    void setArray(int16_t *arr, int16_t size);
-    void setArray(int16_t *arr, int16_t size, uint8_t offset);
-
-    uint8_t endOfCycle();  //end of cycle
-    uint8_t startOfCycle(); //start of cycle
 ### LFO
 #### LFO methods:
 * constructor - all arguments optional
