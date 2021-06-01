@@ -12,9 +12,9 @@ I created this library as I wanted to be able to easily implement basic CV funct
 
 I prefer to keep the implementation simple and readable rather than efficient. No uses of timers or interrupts (other than millis()), minimal shorthand, etc.
 
-### Basic functionality
+## Basic functionality
 
-#### The core library gives you the ability to do generate trigger, gate, quantized CV, slew limiting, AR envelopes, etc.
+### The core library gives you the ability to generate cv signals: trigger, gate, quantized CV, slew limiting, AR envelopes, etc.
 
 For each CV signal, you must:
 1. create a modularCV object, e.g. modularCV chan1 = modularCV();
@@ -22,25 +22,66 @@ For each CV signal, you must:
 3. generate CV signals by using chan1.trigger(), chan1.AR(0, 100), etc.
 4. get the CV output inside your signal loop by calling chan1.get(). This also frees up chan1 to generate a new sample.
 
-#### Sequencer
+### Sequencer
+* retrieves the value at the current step
+    seq.get();
+    * return value at a specific step
+    seq.get(uint8_t step);
+    * returns the value then updates _cur_step
+    seq.trigger();
+    * return current step
+    seq.getCurStep();
 
-#### LFO
-LFO methods:
-constructor - all arguments optional
-LFO (waveform, float freq (Hz),int amplitude)
-lfo.freq( float freq (Hz) )
-lfo.amplitude( int amplitude )
-lfo.bitDepth( byte depth ) - bit resolution of the output signal
-lfo.endOfCycle() - returns one after cycle completes, 0 otherwise
-lfo.loop() - generate a new sample once the previous sample is read
-lfo.get() - read and return a sample
-lfo.peek() - read a sample value without triggering a new sample
-lfo.reset(optional float phase) - reset waveform to beginning, or to an arbitrary phase
+    //resets the sequence to a position
+    void reset(); //default step 0
+    void reset(uint8_t step);
 
-Properties:
-lfo.waveform : TRI, SINE, SQUARE, RAMP, SAW
-lfo.samplingRate : int, default 1000, HZ, number of samples/second
-lfo.shape: float, default 0.5, skews the waveform. 0.5 is no skew
+    //specifies the beginning and ending of the sequence
+    uint8_t range(uint8_t begin, uint8_t end);
+    void reverse();
+    void forward();
+    void stepSize(uint8_t step);
+
+    //copy the whole sequence to an array
+    uint8_t getArray(int16_t *arr, uint8_t size);
+
+    //set the value of a single step
+    void set(uint8_t step, int16_t val);
+
+    //fill the array with a sequence
+    //can be a single value
+    void fill(int16_t val);
+    //an array
+    void fill(int16_t *arr, uint8_t size);
+    //or an array starting at an aribtrary index
+    void fill(int16_t *arr, uint8_t size, uint8_t offset);
+
+    //writes an array into the sequence
+    //with optional offset
+    void setArray(int16_t *arr, uint8_t size);
+    void setArray(int16_t *arr, uint8_t size, uint8_t offset);
+    void setArray(int16_t *arr, int16_t size);
+    void setArray(int16_t *arr, int16_t size, uint8_t offset);
+
+    uint8_t endOfCycle();  //end of cycle
+    uint8_t startOfCycle(); //start of cycle
+### LFO
+#### LFO methods:
+* constructor - all arguments optional
+* LFO (waveform, float freq (Hz),int amplitude)
+* lfo.freq( float freq (Hz) )
+* lfo.amplitude( int amplitude )
+* lfo.bitDepth( byte depth ) - bit resolution of the output signal
+* lfo.endOfCycle() - returns one after cycle completes, 0 otherwise
+* lfo.loop() - generate a new sample once the previous sample is read
+* lfo.get() - read and return a sample
+* lfo.peek() - read a sample value without triggering a new sample
+* lfo.reset(optional float phase) - reset waveform to beginning, or to an arbitrary phase
+
+#### Properties:
+* lfo.waveform : TRI, SINE, SQUARE, RAMP, SAW
+* lfo.samplingRate : int, default 1000, HZ, number of samples/second
+* lfo.shape: float, default 0.5, skews the waveform. 0.5 is no skew
 
 # Examples
 Examples are provided either with no DAC implementation, or using the MCP4728.
