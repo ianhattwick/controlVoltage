@@ -38,12 +38,11 @@ class LFO
     void freq(float frequency);
     void amplitude(uint32_t amp);
     void bitDepth(byte depth);
-
-    float shape = 0.5;
-
+    void shape( float skew);
+    void reset();
+    void reset(float phase);
 
   private:
-
     
     void init(WAVE_SHAPE wave, float freq, int16_t amplitude);
     void incIndex();
@@ -51,8 +50,7 @@ class LFO
     void calcIncrement();
     void updateDivisor();
     uint32_t scale(uint32_t in, uint32_t inLow, uint32_t inHigh, uint32_t outLow, uint32_t outHigh );
-    void reset();
-    void reset(float phase);
+    
 
     uint32_t _outVal = 0;
     int _samplingRate = 1000;
@@ -60,8 +58,11 @@ class LFO
 
     uint16_t _acc = 0; //accumulator
     uint16_t _inc = 0; //phase increment
+    uint16_t _incA = 0; //phase increment
+    uint16_t _incB = 0; //phase increment
     uint16_t _prev = 0; //prev accum value
     uint16_t _skew = 0; //skewed accumulator
+    float _shape = 0.; //bipolar, 0 is no alteration of waveform
     float _prevFreq = 1.;
 
     uint32_t _amplitude = 4095;
