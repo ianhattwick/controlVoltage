@@ -62,11 +62,11 @@ For each CV signal, you must:
 * lfo.get() - read and return a sample
 * lfo.peek() - read a sample value without triggering a new sample
 * lfo.reset(optional float phase) - reset waveform to beginning, or to an arbitrary phase
+* lfo.shape(float shape) :default 0. range -1 to 1, skews the waveform. 0. is no skew
 
 #### Properties:
 * lfo.waveform : TRI, SINE, SQUARE, RAMP, SAW
 * lfo.samplingRate : int, default 1000, HZ, number of samples/second
-* lfo.shape: float, default 0.5, skews the waveform. 0.5 is no skew
 
 # Examples
 Examples are provided either with no DAC implementation, or using the MCP4728.
