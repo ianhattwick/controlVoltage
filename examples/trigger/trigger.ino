@@ -1,11 +1,11 @@
 /* 
-Basic use of modularCV library to implement a trigger and ramp CV
+Basic use of controlVoltage library to implement a trigger and ramp CV
 - trigger duration is 3ms by default
 - the ramp CV is updated at the same time as the trigger (100ms interval)
 - uses cv(val, rampTime) to smooth the transition between CV values
 - basically, a slew limiter
 
-Every modularCV object has three functions:
+Every controlVoltage object has three functions:
 - get() returns the current sample
 - loop() generates a new sample once the previous sample is read
 - some other function to create a CV event. possibilities include:
@@ -20,22 +20,22 @@ Every modularCV object has three functions:
 Monitor in Arduino's serial plotter
 */
 
-#include <modularCV.h>
+#include <controlVoltage.h>
 
 //define cv objects
-modularCV chan1 = modularCV(); //CV
-modularCV chan2 = modularCV(); //trigger
+controlVoltage chan1 = controlVoltage(); //CV
+controlVoltage chan2 = controlVoltage(); //trigger
 
 void setup(){
   Serial.begin(115200);  // initialize serial interface for print()
 
-  Serial.println("modularCV trigger example");
+  Serial.println("controlVoltage trigger example");
 }
 
 
 
 void loop(){
-  //call the modularCV objects loop
+  //call the controlVoltage objects loop
   chan1.loop();
   chan2.loop();
  

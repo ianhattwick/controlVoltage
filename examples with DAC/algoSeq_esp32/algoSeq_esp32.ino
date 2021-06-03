@@ -20,14 +20,14 @@ const byte NUM_STEPS = 12;
 
 #include <Wire.h>
 #include "mcp4728.h"
-#include "modularCV.h"
+#include "controlVoltage.h"
 
 mcp4728 dac = mcp4728(0); // instantiate mcp4728 object, Device ID = 0
 
-modularCV cv[3] = {
-  modularCV(),
-  modularCV(),
-  modularCV()
+controlVoltage cv[3] = {
+  controlVoltage(),
+  controlVoltage(),
+  controlVoltage()
 };
 
 Sequencer seq = Sequencer(NUM_STEPS);

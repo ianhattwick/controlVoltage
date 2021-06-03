@@ -1,5 +1,5 @@
 /* 
-Basic use of modularCV library to implement a sequencer and trigger
+Basic use of controlVoltage library to implement a sequencer and trigger
 - sequencer is loaded with 16 steps from 0 to 4v (dependent on DAC)
 - remember you need to implement your own DAC output!
 - every end of cycle the step range of the sequencer is changed
@@ -12,10 +12,10 @@ Basic use of modularCV library to implement a sequencer and trigger
 Monitor in Arduino's serial plotter
 */
 
-#include <modularCV.h>
+#include <controlVoltage.h>
 
-modularCV chan1; //trigger signal
-modularCV chan2; //CV from sequencer
+controlVoltage chan1; //trigger signal
+controlVoltage chan2; //CV from sequencer
 Sequencer seq(16); //16-step sequencer
 
 void setup() {

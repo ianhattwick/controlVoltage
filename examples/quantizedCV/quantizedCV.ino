@@ -1,5 +1,5 @@
 /* 
-Basic use of modularCV library to implement a quantized CV
+Basic use of controlVoltage library to implement a quantized CV
 - syntax uses 4 octaves of MIDI notes, range from 24 to 72
 - no internal DAC implementation; you are responsible for scaling output for your DAC!
 - CV values are stored:
@@ -11,10 +11,10 @@ Also demonstrates an attack decay envelope with variable curve on chan2
 Monitor in Arduino's serial plotter
 */
 
-#include <modularCV.h>
+#include <controlVoltage.h>
 
-modularCV chan1 = modularCV(); //quantized CV
-modularCV chan2 = modularCV(); //attack release envelope
+controlVoltage chan1 = controlVoltage(); //quantized CV
+controlVoltage chan2 = controlVoltage(); //attack release envelope
 
 void setup(){
   Serial.begin(115200);  // initialize serial interface for print()

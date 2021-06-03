@@ -1,5 +1,5 @@
 /* 
-Basic use of modularCV library to implement an LFO
+Basic use of controlVoltage library to implement an LFO
 Ian Hattwick
 May 31, 2021
 
@@ -30,20 +30,20 @@ lfo.samplingRate : int, default 1000, HZ, number of samples/second
 Monitor in Arduino's serial plotter
 */
 
-#include <modularCV.h>
+#include <controlVoltage.h>
 
 //define cv objects
-modularCV chan1 = modularCV(); //trigger to keep track of time
+controlVoltage chan1 = controlVoltage(); //trigger to keep track of time
 LFO lfo = LFO(TRI, 4, 4095); //waveform, freq (Hz), amplitude
 
 void setup(){
   Serial.begin(115200);  // initialize serial interface for print()
 
-  Serial.println("modularCV LFO example");
+  Serial.println("controlVoltage LFO example");
 }
 
 void loop(){
-  //call the modularCV object's loop
+  //call the controlVoltage object's loop
   chan1.loop();
   lfo.loop();
 

@@ -5,7 +5,7 @@
 
 
 /* _____PROJECT INCLUDES_____________________________________________________ */
-#include "modularCV.h"
+#include "controlVoltage.h"
 
 
 /* _____PUBLIC FUNCTIONS_____________________________________________________ */
@@ -14,21 +14,21 @@ Constructor.
 
 Creates class object. Initialize buffers
 */
-modularCV::modularCV()
+controlVoltage::controlVoltage()
 {
 
 }
 
-modularCV::modularCV(uint8_t bitDepth){
+controlVoltage::controlVoltage(uint8_t bitDepth){
   _bitDepth = bitDepth;
 }
 
-void modularCV::setup() {
+void controlVoltage::setup() {
   
 }
 
 
-void modularCV::loop() {
+void controlVoltage::loop() {
   if( _updateFlag ){ //only calc new sample after previous is read
     byte direction;
 
@@ -116,32 +116,32 @@ void modularCV::loop() {
 
 }
 
-void modularCV::trigger() {
+void controlVoltage::trigger() {
   _outVal = (1<<_bitDepth) - 1;
   _triggerTimer = millis();
   _state = 1;
 }
 
-void modularCV::gate(int val) {
+void controlVoltage::gate(int val) {
   if( val > 0 ) _outVal = (1<<_bitDepth) - 1;
   else _outVal = 0;
   _state = 0;
 }
 
-void modularCV::timedGate(int gateLen) {
+void controlVoltage::timedGate(int gateLen) {
   _outVal = (1<<_bitDepth) - 1;
   _gateLen = gateLen;
   _state = 2;
 }
 
-// void modularCV::gate(int val, int gateLen) {
+// void controlVoltage::gate(int val, int gateLen) {
 //   if( val > 0 ) _outVal = (1<<_bitDepth) - 1;
 //   else _outVal = 0;
 //   _gateLen = gateLen;
 //   _state = 2;
 // }
 
-void modularCV::cv(int val){
+void controlVoltage::cv(int val){
   if( val > (1<<_bitDepth) - 1) val = (1<<_bitDepth) - 1;
   _prev = _outVal;
   _goal = val;
@@ -151,7 +151,7 @@ void modularCV::cv(int val){
   _lineBegin = millis();
 }
 
-void modularCV::cv(int val, int lineTime){
+void controlVoltage::cv(int val, int lineTime){
   if( val > (1<<_bitDepth) - 1) val = (1<<_bitDepth) - 1;
   _prev = _outVal;
   _goal = val;
@@ -161,7 +161,7 @@ void modularCV::cv(int val, int lineTime){
   _lineBegin = millis();
 }
 
-void modularCV::cv(int val, int attack, int decay){
+void controlVoltage::cv(int val, int attack, int decay){
   if( val > (1<<_bitDepth) - 1) val = (1<<_bitDepth) - 1;
   _prev = _outVal;
   _goal = val;
@@ -171,7 +171,7 @@ void modularCV::cv(int val, int attack, int decay){
   _lineBegin = millis();
 }
 
-void modularCV::midi(byte _val){
+void controlVoltage::midi(byte _val){
   byte val = _val<24 ? 24 : _val > 72 ? 72 : _val;
   _prev = _outVal;
   _goal = (val-24) * (4000/48);
@@ -181,7 +181,7 @@ void modularCV::midi(byte _val){
   _lineBegin = millis();
 }
 
-void modularCV::AR(int attack, int decay){
+void controlVoltage::AR(int attack, int decay){
   _prev = 0;
   _outVal = 0;
   _goal = (1<<_bitDepth) - 1;
@@ -191,19 +191,20 @@ void modularCV::AR(int attack, int decay){
   _lineBegin = millis();
 }
 
-int modularCV::get(){
+int controlVoltage::get(){
   _updateFlag = 1;
   return _outVal;
 }
 
-void modularCV::curve(float val){
+void controlVoltage::curve(float val){
   _curve = constrain( val, 0.01, 10.);
 }
 
+void controlVoltage::bitDepth( byte depth){ _bitDepth = depth; }
 
 
 /* _____PRIVATE FUNCTIONS_____________________________________________________ */
 
 /*
-Get current values (input register and eeprom) of modularCV
+Get current values (input register and eeprom) of controlVoltage
 */

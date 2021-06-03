@@ -1,21 +1,21 @@
 /*
-  modularCV.h - library for generating modular CV signals
+  controlVoltage.h - library for generating modular CV signals
   Copyright (c) 2021 Ian Hattwick.  All right reserved.
 
   This library will be distributed under the MIT License. . . .
 */
-#ifndef modularCV_h
-#define modularCV_h
+#ifndef controlVoltage_h
+#define controlVoltage_h
 
 #include "Arduino.h"
 #include "Sequencer.h"
 #include "LFO.h"
 
-class modularCV
+class controlVoltage
 {
   public:
-    modularCV();
-    modularCV(uint8_t bitDepth);
+    controlVoltage();
+    controlVoltage(uint8_t bitDepth);
 
     void setup();
     void loop();
@@ -34,6 +34,8 @@ class modularCV
 
     void curve(float val);
     float _curve = 1.;
+
+    void bitDepth( byte depth);
     
 
   private:

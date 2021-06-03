@@ -64,8 +64,8 @@ uint8_t Sequencer::range(uint8_t begin, uint8_t end){
   //Serial.println("output, begin " + String(_begin) + " end " + String(_end));
   return _end - _begin;
 }
-void Sequencer::reverse(){ _inc = -1;}
-void Sequencer::forward(){ _inc = 1;}
+void Sequencer::reverse(){ if (_inc > 0) _inc*= -1; }
+void Sequencer::forward(){ if (_inc < 0) _inc*= -1;}
 void Sequencer::stepSize(uint8_t step){ _inc = step;}
 
 //copy the whole sequence to an array

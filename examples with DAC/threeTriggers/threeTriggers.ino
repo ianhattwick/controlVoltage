@@ -11,13 +11,13 @@
 
 #include <Wire.h>
 #include "mcp4728.h"
-#include "modularCV.h"
+#include "controlVoltage.h"
 
 mcp4728 dac = mcp4728(0); // instantiate mcp4728 object, Device ID = 0
 
-modularCV trig1 = modularCV();
-modularCV trig2 = modularCV();
-modularCV trig3 = modularCV();
+controlVoltage trig1 = controlVoltage();
+controlVoltage trig2 = controlVoltage();
+controlVoltage trig3 = controlVoltage();
 
 byte pot1 = 33;
 byte pot2 = 32;
