@@ -1,4 +1,4 @@
-# modularCV
+# controlVoltage
 
 A simple library for generating CV to control modular synthesizers. This library does not send data directly to a DAC, but instead you are expected to poll the library within your code and choose your DAC output yourself. 
 
