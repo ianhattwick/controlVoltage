@@ -50,24 +50,6 @@ For each CV signal, you must:
 * seq.endOfCycle();  //end of cycle
 * seq.startOfCycle(); //start of cycle
 
-### LFO
-#### LFO methods:
-* constructor - all arguments optional
-* LFO (waveform, float freq (Hz),int amplitude)
-* lfo.freq( float freq (Hz) )
-* lfo.amplitude( int amplitude )
-* lfo.bitDepth( byte depth ) - bit resolution of the output signal
-* lfo.endOfCycle() - returns one after cycle completes, 0 otherwise
-* lfo.loop() - generate a new sample once the previous sample is read
-* lfo.get() - read and return a sample
-* lfo.peek() - read a sample value without triggering a new sample
-* lfo.reset(optional float phase) - reset waveform to beginning, or to an arbitrary phase
-* lfo.shape(float shape) :default 0. range -1 to 1, skews the waveform. 0. is no skew
-
-#### Properties:
-* lfo.waveform : TRI, SINE, SQUARE, RAMP, SAW
-* lfo.samplingRate : int, default 1000, HZ, number of samples/second
-
 # Examples
 Examples are provided either with no DAC implementation, or using the MCP4728.
 * All examples use the Arduino Serial Plotter to monitor the signal output
