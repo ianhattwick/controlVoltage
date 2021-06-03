@@ -18,6 +18,11 @@ controlVoltage chan1; //trigger signal
 controlVoltage chan2; //CV from sequencer
 Sequencer seq(16); //16-step sequencer
 
+//define DAC
+//esp32 DAc pins are 25 and and 26
+const byte dac1 = 25;
+const byte dac2 = 26;
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
@@ -26,6 +31,9 @@ void setup() {
     seq.set(i,i); //fill sequencer
   }
   Serial.println("setup complete");
+
+  chan1.bitDepth( 8 );
+  chan2.bitDepth( 8 );
 }
 
 void loop() {
@@ -65,7 +73,12 @@ void loop() {
     
     uint16_t trigVal = chan1.get();
     uint16_t seqVal = chan2.get();
-   
+
+    seqVal = seqVal / (12); //converting to 8-bit quantized 
+    
+    dacWrite(DAC1, trigVal );
+    dacWrite(DAC2, seqVal );
+    
     signalTimer = millis();
     Serial.print("cv:");
     Serial.print( trigVal);
