@@ -1,6 +1,6 @@
 # controlVoltage
 
-A simple library for generating CV to control modular synthesizers. This library does not send data directly to a DAC, but instead you are expected to poll the library within your code and choose your DAC output yourself. 
+A simple library for generating CV signals to control modular synthesizers. This library does not send data directly to a DAC, but instead you are expected to poll the library within your code and choose your DAC output yourself. 
 
 Currently I am using the MCP4728 4-channel DAC, using the library https://github.com/BenoitSchillings/mcp4728. But you should be able to use the onboard DAC of an ESP32 etc. 
 * Using a 32-bit microcontrollers is highly recommended, as the signal loop will work best at higher sampling rates, 1kHz for example.
@@ -22,33 +22,8 @@ For each CV signal, you must:
 3. generate CV signals by using chan1.trigger(), chan1.AR(0, 100), etc.
 4. get the CV output inside your signal loop by calling chan1.get(). This also frees up chan1 to generate a new sample.
 
-### Sequencer
-* seq.get() - retrieves the value at the current step  
-* seq.get(uint8_t step) - return value at a specific step  
-* seq.trigger() - returns the value then updates _cur_step 
-* seq.getCurStep() - return current step
-    
-* seq.reset(); //default step 0
-* seq.reset(uint8_t step); //resets the sequence to a position
-
-* seq.range(uint8_t begin, uint8_t end) - specifies the beginning and ending of the sequence
-* seq.reverse()
-* seq.forward()
-* seq.stepSize(uint8_t step)
-* seq.getArray(int16_t *arr, uint8_t size) - opy the whole sequence to an array
-
-* seq.set(uint8_t step, int16_t val) - set the value of a single step
-    
-* fill the array with a sequence  
-    * seq.fill(int16_t val)- //can be a single value
-    * seq.fill(int16_t *arr, uint8_t size) - //or an array
-    * seq.fill(int16_t *arr, uint8_t size, uint8_t offset) - //or an array starting at an aribtrary index
-
-* seq.setArray(int16_t *arr, uint8_t size);
-* seq.setArray(int16_t *arr, uint8_t size, uint8_t offset);
-
-* seq.endOfCycle();  //end of cycle
-* seq.startOfCycle(); //start of cycle
+### Documentation and API
+Detailed information on objects, methods, and parameters is [located on the gihub wiki](https://github.com/ianhattwick/controlVoltage/wiki).
 
 # Examples
 Examples are provided either with no DAC implementation, or using the MCP4728.
@@ -59,5 +34,5 @@ Examples are provided either with no DAC implementation, or using the MCP4728.
 
 The basic functionality is finished. Suggestions for additions are welcome, but I'm trying to keep this library minimal so as to be a platform to build on.
 
-Documentation for everything still forthcoming. The examples should give you a sense of what is possible.
+Documentation for everything is [located on the gihub wiki](https://github.com/ianhattwick/controlVoltage/wiki). The examples should give you a sense of what is possible.
 
