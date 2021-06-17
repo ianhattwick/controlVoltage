@@ -19,8 +19,8 @@ The core library gives you the ability to generate cv signals: trigger, gate, qu
 For each CV signal, you must:
 1. create a modularCV object, e.g. modularCV chan1 = modularCV();
 2. run chan1.loop() inside your main loop
-3. generate CV signals by using chan1.trigger(), chan1.AR(0, 100), etc.
-4. get the CV output inside your signal loop by calling chan1.get(). This also frees up chan1 to generate a new sample.
+3. Use a control rate loop t0 generate CV signals by using chan1.trigger(), chan1.AR(0, 100), etc.
+4. Get the CV output inside your signal loop by calling chan1.get(). This also frees up chan1 to generate a new sample.
 
 ### Documentation and API
 Detailed information on objects, methods, and parameters is [located on the gihub wiki](https://github.com/ianhattwick/controlVoltage/wiki).
