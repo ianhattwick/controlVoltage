@@ -14,7 +14,7 @@ I prefer to keep the implementation simple and readable rather than efficient. N
 
 ## Basic functionality
 
-The core library gives you the ability to generate cv signals: trigger, gate, quantized CV, slew limiting, AR envelopes, etc.
+The core library gives you the ability to generate cv signals: trigger, gate, quantized CV, slew limiting, AR envelopes, etc. Additional classes are provided for generating LFOs and sequencers.
 
 For each CV signal, you must:
 1. create a modularCV object, e.g. modularCV chan1 = modularCV();
@@ -26,7 +26,7 @@ For each CV signal, you must:
 Detailed information on objects, methods, and parameters is [located on the gihub wiki](https://github.com/ianhattwick/controlVoltage/wiki).
 
 # Examples
-Examples are provided either with no DAC implementation, or using the MCP4728.
+Examples are provided either with no DAC implementation, or using ESP32 built-in DAC or the MCP4728 4-channel DAC.
 * All examples use the Arduino Serial Plotter to monitor the signal output
 * Generally the signal sampling rate is 1kHz
 
