@@ -14,7 +14,7 @@ I prefer to keep the implementation simple and readable rather than efficient. N
 
 ## Basic functionality
 
-### The core library gives you the ability to generate cv signals: trigger, gate, quantized CV, slew limiting, AR envelopes, etc.
+The core library gives you the ability to generate cv signals: trigger, gate, quantized CV, slew limiting, AR envelopes, etc.
 
 For each CV signal, you must:
 1. create a modularCV object, e.g. modularCV chan1 = modularCV();
@@ -33,6 +33,8 @@ Examples are provided either with no DAC implementation, or using the MCP4728.
 # future plans
 
 The basic functionality is finished. Suggestions for additions are welcome, but I'm trying to keep this library minimal so as to be a platform to build on.
+
+One possibilty for future releases is including additional examples implementing standard techniques (euclidean sequencing, etc.)
 
 Documentation for everything is [located on the gihub wiki](https://github.com/ianhattwick/controlVoltage/wiki). The examples should give you a sense of what is possible.
 
