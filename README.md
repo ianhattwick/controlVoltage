@@ -5,6 +5,7 @@ A simple library for generating CV signals to control modular synthesizers. This
 Currently I am using the MCP4728 4-channel DAC, using the library https://github.com/BenoitSchillings/mcp4728. But you should be able to use the onboard DAC of an ESP32 etc. 
 * Using a 32-bit microcontrollers is highly recommended, as the signal loop will work best at higher sampling rates, 1kHz for example.
 * Using any Serial function will slow down your code - ok for debugging and monitoring while doing development but not so good when actually playing. Just FYI!
+* Support for atMega chips has been added. . . examples / info on limitations forthcoming.
 
 ## Who is this for?
 
