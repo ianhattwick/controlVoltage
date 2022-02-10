@@ -21,6 +21,7 @@ controlVoltage::controlVoltage()
 
 controlVoltage::controlVoltage(uint8_t bitDepth){
   _bitDepth = bitDepth;
+  _peakVal = (1<<_bitDepth) - 1;
 }
 
 void controlVoltage::setup() {
@@ -29,6 +30,7 @@ void controlVoltage::setup() {
 
 
 void controlVoltage::loop() {
+  //Serial.println("loop /t state " + String(_state));
   if( _updateFlag ){ //only calc new sample after previous is read
     byte direction;
 
@@ -52,85 +54,66 @@ void controlVoltage::loop() {
       break;
 
       case 3: //smooth CV
-        _progress = millis() - _lineBegin;
-        direction = _goal > _prev;
-        _lineLength = _riseTime+1;
-        if(direction == 0) _lineLength = _fallTime+1;
-       //Serial.println(" progress: " + String(_progress) + " " + String(_progress/_lineLength));
-        if(_progress > _lineLength){
-          _outVal = _goal;
+        if(_goal == _outVal){
           _state = 0;
-          break;
-        } else{
-          _outVal = (float)(_goal - _prev) * ((float)_progress/_lineLength) + _prev;
+        } else if( _goal > _outVal){ 
+          if( _goal - _outVal < _riseInc){
+            _outVal = _goal;
+            _state = 0;
+          } else _outVal += _riseInc;
+        } else {
+          if( _outVal - _goal < _fallInc){
+            _outVal = _goal;
+            _state = 0;
+          } else  _outVal -= _fallInc;
         }
+        // Serial.println("case 3 " + 
+        //   String(_outVal) + " " + 
+        //   String(_riseInc));
         break;
 
       case 4: //AR attack
-        _progress = millis() - _lineBegin;
-        _lineLength = _riseTime+1;
-        if(_progress > _lineLength){
-          _outVal = (1<<_bitDepth) - 1;
-          _prev = _outVal;
-          _lineBegin = millis();
+        _outVal += _riseInc;
+        if((_32bit - _outVal) < _riseInc){
           _state = 5;
           _goal = 0;
-          break;
-        } else{
-          _outVal = (float)(_goal - _prev) * ((float)_progress/_lineLength) + _prev;
         }
-        //Serial.println("attack " + String(_progress));
-        //Serial.println("att" + String(_outVal));
+
         break;
 
       case 5: //AR decay
-        _progress = millis() - _lineBegin;
-        _lineLength = _fallTime+1;
-        if(_progress > _lineLength){
+        _outVal -= _fallInc;
+        if( _outVal < _fallInc ){
           _outVal = 0;
           _state = 0;
-          break;
-        } else{
-          _outVal = (float)(_goal - _prev) * ((float)_progress/_lineLength) + _prev;
-          if( _outVal<0 ) _outVal = 0;
         }
-        //Serial.println("rel" + String(_outVal));
+
         break;
 
     }//switch
     //Serial.println("state" + String(_state));
 
-    if(_curve != 1.){
-        float val = (float)_outVal / ((1<<_bitDepth)-1);
-        // Serial.print(_outVal);
-        // Serial.print(" ");
-        // Serial.print(val);
-        // Serial.print(" ");
-        val = pow(val, _curve);
-        //Serial.println(val);
-        _outVal = val * (1<<_bitDepth)-1;
-        if( _outVal<0 ) _outVal = 0;
-    }
     _updateFlag = 0;
   }
 
 }
 
 void controlVoltage::trigger() {
-  _outVal = (1<<_bitDepth) - 1;
+  _outVal = _32bit;
   _triggerTimer = millis();
   _state = 1;
 }
 
 void controlVoltage::gate(int val) {
-  if( val > 0 ) _outVal = (1<<_bitDepth) - 1;
+  if( val > 0 ) _outVal = _32bit;
   else _outVal = 0;
   _state = 0;
 }
 
 void controlVoltage::timedGate(int gateLen) {
-  _outVal = (1<<_bitDepth) - 1;
+  _outVal = _32bit;
   _gateLen = gateLen;
+  _triggerTimer = millis();
   _state = 2;
 }
 
@@ -142,58 +125,66 @@ void controlVoltage::timedGate(int gateLen) {
 // }
 
 void controlVoltage::cv(int val){
-  if( val > (1<<_bitDepth) - 1) val = (1<<_bitDepth) - 1;
-  _prev = _outVal;
-  _goal = val;
+  if( val > _peakVal) val = _peakVal;
+  _outVal = val << (32 - _bitDepth);
+  _goal = val << (32 - _bitDepth);
   _state = 3;
-  _riseTime = 0;
-  _fallTime = 0;
-  _lineBegin = millis();
 }
 
 void controlVoltage::cv(int val, int lineTime){
-  if( val > (1<<_bitDepth) - 1) val = (1<<_bitDepth) - 1;
-  _prev = _outVal;
-  _goal = val;
+  if( val > _peakVal) val = _peakVal;
+  _goal = ((uint32_t)val) << (32 - _bitDepth);
   _state = 3;
-  _riseTime = lineTime;
-  _fallTime = lineTime;
-  _lineBegin = millis();
+  if( _goal > _outVal) _riseInc = ((_goal - _outVal) / lineTime)  * (1000/sampleRate);
+  else _fallInc = ((_outVal - _goal) / lineTime)  * (1000/sampleRate);
+  // Serial.println("cv: " + String(_riseInc) + " " +
+  //   String(_fallInc) + " " +
+  //   String(_goal) + " " +
+  //   String(_outVal) + " " + 
+  //   String(_peakVal) + " " +
+  //   String(val));
 }
 
 void controlVoltage::cv(int val, int attack, int decay){
   if( val > (1<<_bitDepth) - 1) val = (1<<_bitDepth) - 1;
-  _prev = _outVal;
   _goal = val;
   _state = 3;
-  _riseTime = attack;
-  _fallTime = decay;
-  _lineBegin = millis();
+  if( _goal > _outVal) _riseInc = ((_goal - _outVal) / attack)  * (1000/sampleRate);
+  else _fallInc = ((_outVal - _goal) / decay)  * (1000/sampleRate);
 }
 
 void controlVoltage::midi(byte _val){
-  byte val = _val<24 ? 24 : _val > 72 ? 72 : _val;
-  _prev = _outVal;
-  _goal = (val-24) * (4000/48);
-  _state = 3;
-  _riseTime = 0;
-  _fallTime = 0;
-  _lineBegin = millis();
+  byte val = _val < 24 ? 24 : _val > 72 ? 72 : _val;
+  _outVal = val;
+  _state = 0;
+  _riseInc = 0;
+  _fallInc = 0;
 }
 
 void controlVoltage::AR(int attack, int decay){
-  _prev = 0;
   _outVal = 0;
-  _goal = (1<<_bitDepth) - 1;
   _state = 4;
-  _riseTime = attack;
-  _fallTime = decay;
-  _lineBegin = millis();
+  _riseInc = ( _32bit / attack) * (1000/sampleRate);
+  _fallInc = (_32bit / decay)  * (1000/sampleRate);
+  //Serial.println(String(_peakVal) + " " + String(_riseInc) + " " + String(sampleRate));
+  //Serial.println("attack release: " + String(_riseInc) + " " + String(_fallInc));
 }
 
 int controlVoltage::get(){
   _updateFlag = 1;
-  return _outVal;
+  uint32_t returnVal = _outVal >> (32 - _bitDepth );
+
+  if(_curve != 1.){
+    float val = (float)returnVal / _peakVal;
+    // Serial.print(_outVal);
+    // Serial.print(" ");
+    // Serial.print(val);
+    // Serial.print(" ");
+    val = pow(val, _curve);
+    //Serial.println(val);
+    returnVal = val * _peakVal;
+    }
+  return returnVal;
 }
 
 void controlVoltage::curve(float val){
@@ -201,6 +192,10 @@ void controlVoltage::curve(float val){
 }
 
 void controlVoltage::bitDepth( byte depth){ _bitDepth = depth; }
+
+void controlVoltage::riseTime(int16_t val){ _riseInc = (_32bit / val) * (1000/sampleRate);}
+void controlVoltage::fallTime(int16_t val){ _fallInc = (_32bit / val) * (1000/sampleRate);}
+
 
 
 /* _____PRIVATE FUNCTIONS_____________________________________________________ */

@@ -36,13 +36,18 @@ class controlVoltage
     float _curve = 1.;
 
     void bitDepth( byte depth);
+    int sampleRate = 1000;
+    void riseTime(int val);
+    void fallTime(int val);
     
 
   private:
     uint8_t _bitDepth = 12;
     uint8_t _state = 0;
-    int _outVal = 0;
+    uint32_t _outVal = 0;
     uint8_t _updateFlag = 1;
+    uint32_t _peakVal = (1<<12) - 1;
+    uint32_t _32bit = -1;
 
     
     //trigger/gate variables
@@ -51,12 +56,11 @@ class controlVoltage
     int _gateLen = 100;
     
     //cv variables
-    int _prev = 0;
-    int _goal = 0;
+    uint32_t _goal = 0;
     uint32_t _lineBegin = 0;
     uint32_t _progress = 0;
-    int16_t _riseTime = 0;
-    int16_t _fallTime = 0;
+    uint32_t _riseInc = 0;
+    uint32_t _fallInc = 0;
     int _lineLength = 100;
     
 };

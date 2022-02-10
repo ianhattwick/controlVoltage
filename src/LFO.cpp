@@ -24,6 +24,7 @@ void LFO::init(WAVE_SHAPE wave, float freq, int16_t amplitude){
   _freq = freq;
   _amplitude = amplitude;
   updateDivisor();
+  //Serial.println(_divisor);
   calcIncrement();
 }
 
@@ -43,11 +44,11 @@ uint16_t LFO::peek(){
 void LFO::loop(){
   if( _updateFlag ){
     _updateFlag = 0;
-
+    //Serial.print(_incA);
     if( _freq != _prevFreq) calcIncrement();
-
+    //Serial.println("loop");
     _prev = _acc;
-    if( _acc < 1<<15 ) _acc += _incA;
+    if( _acc < (int32_t)1<<15 ) _acc += _incA;
     else _acc += _incB;
     //_acc += _inc;
     if( _acc < _prev ) _EOC = 1;
@@ -70,14 +71,14 @@ void LFO::loop(){
     switch( waveform ){
       case TRI: 
       case TRIANGLE:
-      if( _acc < 1 << (15 )) _outVal = _acc*2;
-      else _outVal = ((1 << 16)  - _acc ) * 2;
+      if( _acc < (uint32_t)1 << (15 )) _outVal = _acc*2;
+      else _outVal = (((uint32_t)1 << 16)  - _acc ) * 2;
       break;
 
       case SQUARE:
       case RECT: 
       case PULSE:
-      _outVal = (_acc > (1 <<  15 )) * ((1<<16)-1);
+      _outVal = (_acc > ((uint32_t)1 <<  15 )) * ((1<<16)-1);
       break;
 
       case RAMP:
@@ -85,13 +86,13 @@ void LFO::loop(){
       break;
 
       case SAW:
-      _outVal = ( 1 << 16 ) - _acc;
+      _outVal = ( (uint32_t)1 << 16 ) - _acc;
       break;
 
       case SINE:
       case SIN:
-      float curInc = ((float)_acc/(1 << 16 )+0.25) * TWO_PI;
-      _outVal = (sin(curInc) + 1) * ( 1 <<  15 );
+      float curInc = ((float)_acc/((uint32_t)1 << 16 )+0.25) * TWO_PI;
+      _outVal = (sin(curInc) + 1) * ( (uint32_t)1 <<  15 );
       break;
     }//waveform switch
 
@@ -154,8 +155,8 @@ increment = 655536/100
 void LFO::calcIncrement(){
   _prevFreq = _freq;
   int period = 1000./ _freq;
-  _inc = ((uint32_t)(1 << ( 16 ) ) / samplingRate) * _freq;
-
+  _inc = ((uint32_t)((uint32_t)1 << ( 16 ) ) / samplingRate) * _freq;
+  //Serial.println(5);
   if( _shape == 0 ) {
     _incA = _inc;
     _incB = _inc;
@@ -177,9 +178,9 @@ void LFO::calcIncrement(){
 //((1<<32) / (1<<20)) * ((1<<12 )/ 1500)
 //((1<<20)) /(2000/(1<<12))
 void LFO::updateDivisor(){
-  _bitDivisor = 1 << (16 - _bitDepth);
-  if( _amplitude  > 1 << _bitDepth) _amplitude = 1 << _bitDepth; //check amp is in range
-  float scalar = (float)_amplitude / (1 << _bitDepth);
+  _bitDivisor = (uint32_t)1 << (16 - _bitDepth);
+  if( _amplitude  > (uint32_t)1 << _bitDepth) _amplitude = (uint32_t)1 << _bitDepth; //check amp is in range
+  float scalar = (float)_amplitude / ((uint32_t)1 << _bitDepth);
   _divisor = (float)_bitDivisor / scalar;
   //Serial.println("divisor " + String(_divisor));
 }
