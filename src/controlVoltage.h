@@ -37,8 +37,8 @@ class controlVoltage
 
     void bitDepth( byte depth);
     int sampleRate = 1000;
-    void riseTime(int val);
-    void fallTime(int val);
+    void riseTime(int16_t val);
+    void fallTime(int16_t val);
     
 
   private:

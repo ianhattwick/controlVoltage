@@ -110,11 +110,18 @@ void controlVoltage::gate(int val) {
   _state = 0;
 }
 
+// void controlVoltage::timedGate(int gateLen) {
+//   _outVal = _32bit;
+//   _gateLen = gateLen;
+//   _triggerTimer = millis();
+//   _state = 2;
+// }
+
 void controlVoltage::timedGate(int gateLen) {
-  _outVal = _32bit;
-  _gateLen = gateLen;
-  _triggerTimer = millis();
-  _state = 2;
+_outVal = (1<<_bitDepth) - 1;
+_gateLen = gateLen;
+_triggerTimer = millis();
+_state = 2;
 }
 
 // void controlVoltage::gate(int val, int gateLen) {
